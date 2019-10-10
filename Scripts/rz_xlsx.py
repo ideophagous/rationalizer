@@ -80,7 +80,11 @@ def get_row_by_id(table_name,row_id):
     is not found, returns -1.
 
     Input:
-    - table_name: 
+    - table_name: name of the queried table
+
+    Output:
+    A list representing the desired row, or -1 if
+    such a row is not found or an error occurs.
     """
     
     sheet     = get_model_sheet(table_name)
@@ -167,7 +171,44 @@ def delete_row(table_name,row_id):
     return False
 
 def modify_row(table_name,row_id,new_row):
-    return False
+    """
+    Modifies a row identified by row_id by replacing its
+    values with the values of 'new_row' in the table
+    'table_name', and returns True if the operation is
+    successful.
+    If an exception occurs, prints the error message
+    and returns False.
+
+    Input:
+    - table_name: name of the table (stored as an Excel
+    file
+    - row_id: the id of the row to be replaced.
+    - new_row: a list of potentially heterogenous values
+    representing the contents of the new row to replace
+    the old row of the table.
+
+    Output:
+    A boolean denoting the success of the operation or
+    lack thereof.
+    """
+    wb        = load_workbook(MODEL_PATH+table_name)
+    sheet     = wb.active
+    id_column = [id_num.value for id_num in list(sheet.columns)[0]]
+    row_index = id_column.index(row_id)
+
+    fill_row_num  = len(id_column)+1
+
+    #get_column_letter
+
+    try:
+        print(get_column_letter(j+1)+str(fill_row_num))
+        sheet[get_column_letter(j+1)+str(fill_row_num)] = row[j]
+        wb.save(MODEL_PATH+table_name)    
+        return True
+    except:
+        print('add_row failed')
+        print(sys.exc_info())
+        return False
 
 
 if __name__ == '__main__':
