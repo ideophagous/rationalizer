@@ -170,19 +170,18 @@ def add_row(table_name,row):
 def delete_row(table_name,row_id):
     return False
 
-def modify_row(table_name,row_id,new_row):
+def modify_row(table_name,new_row):
     """
-    Modifies a row identified by row_id by replacing its
-    values with the values of 'new_row' in the table
-    'table_name', and returns True if the operation is
-    successful.
+    Modifies a row identified by the ID new_row[0] by
+    replacing its values with the values of 'new_row'
+    in the table 'table_name', and returns True if the
+    operation is successful.
     If an exception occurs, prints the error message
     and returns False.
 
     Input:
     - table_name: name of the table (stored as an Excel
     file
-    - row_id: the id of the row to be replaced.
     - new_row: a list of potentially heterogenous values
     representing the contents of the new row to replace
     the old row of the table.
@@ -194,19 +193,19 @@ def modify_row(table_name,row_id,new_row):
     wb        = load_workbook(MODEL_PATH+table_name)
     sheet     = wb.active
     id_column = [id_num.value for id_num in list(sheet.columns)[0]]
-    row_index = id_column.index(row_id)
-
-    fill_row_num  = len(id_column)+1
+    
+    row_index = id_column.index(new_row[0])+1
 
     #get_column_letter
 
     try:
-        print(get_column_letter(j+1)+str(fill_row_num))
-        sheet[get_column_letter(j+1)+str(fill_row_num)] = row[j]
+        for j in range(len(new_row)):
+            print(get_column_letter(j+1)+str(row_index))
+            sheet[get_column_letter(j+1)+str(row_index)] = new_row[j]
         wb.save(MODEL_PATH+table_name)    
         return True
     except:
-        print('add_row failed')
+        print('modify_row failed')
         print(sys.exc_info())
         return False
 
@@ -220,5 +219,5 @@ if __name__ == '__main__':
     #print(get_row_by_id(table_name,row_id))
 
     #row = create_row_with_user_input(table_name)
-    row = [8, 'Github 50', 'Have at least 50 repositories on Github', '', '31/12/2019', '2', 'False']
-    print(add_row(table_name,row))
+    row = [7, 'Github 50', 'Have at least 50 repositories on Github', '', '31/12/2019', '2', 'False']
+    print(modify_row(table_name,row))
